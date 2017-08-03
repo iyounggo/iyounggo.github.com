@@ -1,5 +1,4 @@
-port: 4003
 permalink: /:categories/:year/:month/:day/:title 
 
 
-title : Jekyll Bootstrap
+title : iyoungo
