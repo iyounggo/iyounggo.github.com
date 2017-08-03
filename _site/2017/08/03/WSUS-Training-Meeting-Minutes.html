@@ -1,0 +1,212 @@
+<p>[TOC]</p>
+<h1 id="wsus-related-knownledge">WSUS related knownledge</h1>
+<h2 id="history">History</h2>
+<blockquote>
+  <ul>
+    <li>WSUS 2.0 使用web console</li>
+    <li>WSUS 3.0：独立安装包，自带windows internal database（轻量级SQL） <strong>internal db与SQL Server的性能差别不大，区别在于SQL server可以远程连接, internal 不能做一些高端的功能</strong>；</li>
+    <li>3.0 SP1：</li>
+    <li>3.0 SP2：为了支持Win7；</li>
+    <li>4.0： 操作系统built-in，自带WID(与SQL2012兼容)</li>
+    <li>4.0*：可以添加upgrade通过patch来实现（server2012需要装两个重要的补丁且做一些配置才可以实现upgrade<code class="highlighter-rouge">KB3095113&amp;KB3159706</code>；server2016上可以不用装这两个补丁）</li>
+  </ul>
+</blockquote>
+
+<h2 id="concept">Concept</h2>
+
+<blockquote>
+  <ul>
+    <li>产品生命周期</li>
+  </ul>
+</blockquote>
+
+<blockquote>
+  <blockquote>
+    <ul>
+      <li>service pack
+存在情况：只有安装了service pack，才能够安装一些补丁</li>
+    </ul>
+  </blockquote>
+</blockquote>
+
+<blockquote>
+  <ul>
+    <li>hotfix, update</li>
+  </ul>
+</blockquote>
+
+<blockquote>
+  <blockquote>
+    <ul>
+      <li>hotfix: 微软针对特定问题测试后，在出现问题后才去安装(特定范围+特定问题使用); wsus 默认不会有，但可以导入</li>
+      <li>update: 大众</li>
+      <li>WSUS update： 可以使用工具规模化部署的; [【含<strong>metadata</strong>+<strong>update file</strong>两部分】
+metadata用https； <strong>update file用http【不可以改变】</strong></li>
+    </ul>
+  </blockquote>
+</blockquote>
+
+<blockquote>
+  <ul>
+    <li>windows update, microsoft update</li>
+  </ul>
+</blockquote>
+
+<blockquote>
+  <blockquote>
+    <ul>
+      <li>windows update: 操作系统的更新(.net framework, )</li>
+      <li>microsoft update： 包含所有MS可以面向用户的更新，包含windows update</li>
+    </ul>
+  </blockquote>
+</blockquote>
+
+<blockquote>
+  <ul>
+    <li>Microsoft Update Catalog, offline catalog</li>
+  </ul>
+</blockquote>
+
+<blockquote>
+  <blockquote>
+    <ul>
+      <li>基本所有补丁会放到catalog上供下载； 使用catalog可以同步某一个update，而不用把所有的都下下来</li>
+      <li>offline catalog 安全更新检测工具</li>
+    </ul>
+  </blockquote>
+</blockquote>
+
+<blockquote>
+  <ul>
+    <li>Windows update agent</li>
+  </ul>
+</blockquote>
+
+<blockquote>
+  <blockquote>
+    <p>是WSUS的客户端；有API供调用(但win10上有一些未公开，ref website)； 主要dll：<code class="highlighter-rouge">C:\windows\system32\wuaueng.dll</code></p>
+  </blockquote>
+</blockquote>
+
+<blockquote>
+  <ul>
+    <li>Windows Update Management Tool</li>
+  </ul>
+</blockquote>
+
+<blockquote>
+  <blockquote>
+    <p>WSUS, Configuration Manager(前两个主要企业在用), MBSA</p>
+  </blockquote>
+</blockquote>
+
+<blockquote>
+  <ul>
+    <li>classification</li>
+  </ul>
+</blockquote>
+
+<blockquote>
+  <blockquote>
+    <ul>
+      <li>definition: 包括如反垃圾邮件的更新，推荐一个月一次</li>
+      <li>security update:</li>
+      <li>service pack: 可能是其他补丁的先决条件，没有就无法更新；</li>
+    </ul>
+  </blockquote>
+</blockquote>
+
+<blockquote>
+  <ul>
+    <li>security bulletin, security advisory, security update</li>
+  </ul>
+</blockquote>
+
+<blockquote>
+  <blockquote>
+    <ul>
+      <li>security bulletin(提供该组件涉及到的漏洞信息和对应的update信息)，一般固定在Tues</li>
+      <li>security advisory安全通告，不是windows漏洞</li>
+    </ul>
+  </blockquote>
+</blockquote>
+
+<blockquote>
+  <ul>
+    <li>security update guidance</li>
+  </ul>
+</blockquote>
+
+<blockquote>
+  <blockquote>
+    <p>漏洞信息，评级； 可以用api query(github上有)；</p>
+  </blockquote>
+</blockquote>
+
+<h2 id="practice">Practice</h2>
+
+<blockquote>
+  <ul>
+    <li>Operation</li>
+  </ul>
+</blockquote>
+
+<blockquote>
+  <blockquote>
+    <ul>
+      <li>synchronization</li>
+      <li>approve: install uninstall auto-approve deadline</li>
+      <li>express installation: WSUS会检查差异，所以对于cumulate的更新，不一定在客户端是完全更新的。</li>
+      <li>computer group: 可以在客户端通过组策略指定属于的计算机组</li>
+    </ul>
+  </blockquote>
+</blockquote>
+
+<blockquote>
+  <ul>
+    <li>log and tools</li>
+  </ul>
+</blockquote>
+
+<blockquote>
+  <blockquote>
+    <p>Server side</p>
+    <blockquote>
+      <ul>
+        <li>IIS log</li>
+        <li>softwaredistribution log</li>
+      </ul>
+    </blockquote>
+  </blockquote>
+</blockquote>
+
+<blockquote>
+  <blockquote>
+    <p>Client side</p>
+    <blockquote>
+      <ul>
+        <li>Windowsupdate log</li>
+        <li>C:\windows\logs\CBS*.*</li>
+        <li>Application, event log</li>
+      </ul>
+    </blockquote>
+  </blockquote>
+</blockquote>
+
+<blockquote>
+  <ul>
+    <li>Local Publishing
+第三方的patch publish到WSUS上面。 pre-requist/installation, <strong>detection logic</strong></li>
+  </ul>
+</blockquote>
+
+<hr />
+<h2 id="tips">Tips</h2>
+<ol>
+  <li>在补丁中的信息：
+Deployment optional/Automatic updates, WSUS and Catalog 三个来源： 检测该补丁是否已经被安装，可以被选择是否安装； WSUS指WSUS可以get到； Catalog；  如果在三个源中哪个没有，那以那种方式一定找不到该补丁；</li>
+  <li>WSUS的容量：最小原则，只同步需要的；否则因数据库的限制会有性能问题；</li>
+  <li>win10前是没有upgrade的，</li>
+  <li><code class="highlighter-rouge">MSU</code>下来后如何导入</li>
+</ol>
+

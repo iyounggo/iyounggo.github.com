@@ -1,0 +1,39 @@
+<h1 id="windows-权限管理">Windows 权限管理</h1>
+
+<h2 id="overview">Overview</h2>
+<blockquote>
+  <ul>
+    <li>SID的作用，如何获得，命名规则，常见的SID值，如何修改。</li>
+    <li>安全体系讲解(与权限相关部分)，Access</li>
+    <li>Token，ACL(DACL，SACL)，ACE，各个模块如何协同如何工作，从登录到退出。</li>
+    <li>特权讲解，作用，有哪些特权，常用的例子。</li>
+    <li>安全机制API查询和使用(与权限相关部分)。</li>
+  </ul>
+</blockquote>
+
+<h2 id="practice">practice</h2>
+
+<blockquote>
+  <ul>
+    <li>overview</li>
+    <li>不同账户的权限规则，跨账户提权？</li>
+    <li>域权限管理</li>
+    <li>windows 对各类应用的默认权限规则(以管理员运行和普通运行的差异、哪些类型app)</li>
+    <li>windows 对不同操作的默认权限规则(regedit和code是不同的)</li>
+    <li>windows权限信息的存储、查看</li>
+    <li>普通文件权限管理(trustedinstaller 与 普通用户转换)</li>
+    <li>注册表权限管理(注册表项的访问、读写；提权；恢复)</li>
+    <li>权限‘继承’(a. 管理员运行才可set-execution unrestricted b. 不同级的reg和文件目录权限不同)</li>
+    <li>还有哪些提权方式？</li>
+  </ul>
+</blockquote>
+
+<h2 id="组策略与注册表的关系">组策略与注册表的关系</h2>
+
+<blockquote>
+  <ul>
+    <li>二者发挥作用的关系(由谁如何决定)</li>
+    <li>admx文件 vs 组策略 vs 注册表</li>
+    <li>reg, sec, audit分别要如何处理</li>
+  </ul>
+</blockquote>

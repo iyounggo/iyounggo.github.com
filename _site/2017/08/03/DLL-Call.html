@@ -1,0 +1,136 @@
+<h2 id="c中lib和dll的生成及调用"><code class="highlighter-rouge">C++</code>中lib和DLL的生成及调用</h2>
+<h3 id="概念">概念</h3>
+
+<blockquote>
+  <ul>
+    <li><strong>静态链接</strong>：静态链接是由链接器在链接时将库的内容加入到可执行程序中的做法。链接器是一个独立程序，将一个或多个库或目标文件（先前由编译器或汇编器生成）链接到一块生成可执行程序。</li>
+    <li><strong>动态链接</strong>：相对于静态链接，在程序运行时再将组成程序的目标文件进行链接的过程。</li>
+  </ul>
+</blockquote>
+
+<p>lib中的指令全部直接被包含在生成的exe中，DLL文件可以动态的被引用和卸载；</p>
+
+<p>lib中不能再包含其他的链接库，dll中可以再包含其他的链接库(静态和动态)；</p>
+
+<h3 id="lib分类">lib分类</h3>
+<blockquote>
+  <ul>
+    <li><strong>lib作为静态库</strong>，这种lib中有函数的实现代码，一般用在静态链接上，它是将lib中代码加入目标模块（EXE或DLL）文件中，所以链接好后，该lib文件就没用了；
+      <blockquote>
+        <p><strong>特点</strong></p>
+
+        <p>是一个外部函数与变量的集合体(库)，在编译期间由编译器和连接器将它集成至应用程序内(静态)。
+<strong>库</strong>：函数与变量的集合；
+<strong>静态</strong>：这部分代码已经在可执行文件内了</p>
+      </blockquote>
+    </li>
+    <li><strong>lib配合dll使用</strong>，这种lib中没有代码实现，代码在dll中。这种lib用在<strong>静态调用dll</strong>上，起的作用也是链接作用，链接完成，lib也就没用了。</li>
+  </ul>
+</blockquote>
+
+<h3 id="lib的生成">lib的生成</h3>
+<blockquote>
+  <ul>
+    <li>VS中选择<code class="highlighter-rouge">application type</code>为“静态链接库”创建工程</li>
+    <li><code class="highlighter-rouge">.h</code> 文件中，在正常声明函数之前添加<code class="highlighter-rouge">extern</code>来说明这是一个外部函数，这个函数不由自己实现，而是由外部库实现的，以便链接器进行链接</li>
+    <li><code class="highlighter-rouge">.cpp</code> 文件中正常实现函数</li>
+    <li>build后生成<code class="highlighter-rouge">.lib</code>文件</li>
+  </ul>
+</blockquote>
+
+<h3 id="lib的使用两种方式">lib的使用(两种方式)</h3>
+<p>需要<code class="highlighter-rouge">.h</code>和<code class="highlighter-rouge">.lib</code>文件</p>
+<blockquote>
+  <ul>
+    <li>在代码中添加<code class="highlighter-rouge">.lib</code>的位置
+<code class="highlighter-rouge">#pragma comment (lib,"..//Debug//CppLib.lib")</code></li>
+    <li>在工程中设置：（VC）项目-&gt;属性-&gt;VC++ Directories选项卡-&gt;libraries directories中添加<code class="highlighter-rouge">.lib</code>位置-（确定后）-&gt;添加对<code class="highlighter-rouge">.lib</code>的“引用”; (VS)项目→配置属性→连接器→输入→附加依赖项</li>
+  </ul>
+</blockquote>
+
+<h3 id="dll生成">DLL生成</h3>
+<blockquote>
+  <h4 id="仅包含dll---用于dll的动态调用">仅包含<code class="highlighter-rouge">.dll</code>   (<strong>用于DLL的动态调用</strong>)</h4>
+  <blockquote>
+    <ul>
+      <li>一个project仅包含一个*.def文件</li>
+    </ul>
+
+    <p>.def文件格式：</p>
+    <div class="highlighter-rouge"><pre class="highlight"><code>LIBRARY
+EXPORTS
+    funca
+    funcb
+</code></pre>
+    </div>
+
+    <p>新建Win32 DLL项目的时候有“导出符号”这个选项的，勾选之后才能导出lib文件
+要不然就只能自己写<code class="highlighter-rouge">def</code>文件，或者<code class="highlighter-rouge">dumpbin</code>命令生成def文件</p>
+    <h4 id="包含-hlib-和-dll--用于dll的静态调用">包含 <code class="highlighter-rouge">.h</code>、<code class="highlighter-rouge">.lib</code> 和 <code class="highlighter-rouge">.dll</code>  (<strong>用于DLL的静态调用</strong>)</h4>
+    <ul>
+      <li>需要在<code class="highlighter-rouge">.h</code>文件中函数的声明之前和<code class="highlighter-rouge">.cpp</code>中函数定义之前添加<code class="highlighter-rouge">extern "C" __declspec(dllexport)</code></li>
+    </ul>
+
+    <p>注：extern “C”和.def的方式不冲突，可以在dll中把两种方式都加上</p>
+  </blockquote>
+</blockquote>
+
+<h3 id="dll调用">DLL调用</h3>
+<blockquote>
+  <h4 id="overview">Overview</h4>
+  <ul>
+    <li>静态调用(隐士调用)</li>
+    <li>动态调用(显示调用)</li>
+  </ul>
+
+  <h4 id="cc调用c-dll分为静态调用和动态调用都是调用dll">C/C++调用<code class="highlighter-rouge">C++</code> dll分为静态调用和动态调用(都是调用DLL)</h4>
+
+  <ol>
+    <li>静态调用： <code class="highlighter-rouge">#include"*.h"</code> + <code class="highlighter-rouge">#pragma comment(lib, xx.lib)</code>, 直接使用函数;</li>
+  </ol>
+
+  <p>静态调用必须使用<code class="highlighter-rouge">.h</code> <code class="highlighter-rouge">.lib</code> 和 <code class="highlighter-rouge">.dll</code>三个文件</p>
+
+  <ol>
+    <li>动态调用：用函数指针调用DLL中的函数，添加<code class="highlighter-rouge">#include&lt;windows.h&gt;</code>，然后 <code class="highlighter-rouge">typedef int(*func)()</code> <code class="highlighter-rouge">HINSTANCE hdll = LoadLibrary("*.dll")</code> <code class="highlighter-rouge">func = GetProcAddress(hdll, func)</code> &gt;</li>
+  </ol>
+
+  <h4 id="c调用c用pinvokedllonly-c还可调用com用pinvokecom">C#调用<code class="highlighter-rouge">C++</code>用<code class="highlighter-rouge">p/invoke[dll]</code>(only); C#还可调用com用p/invoke[com]</h4>
+
+  <ol>
+    <li>以包含.lib或只有.dll的方式生成DLL</li>
+    <li>添加命名空间using System.Runtime.InteropServices;</li>
+    <li>以如下方式调用DLL并声明DLL中的函数(DllImport后参数为可变长)
+      <div class="highlighter-rouge"><pre class="highlight"><code>public class CppInvoke
+  {
+   [DllImport("dllTest.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall)]
+   public static extern int add(
+       int a,
+       int b
+       );
+  } 
+其中的static是必须存在的 
+</code></pre>
+      </div>
+    </li>
+    <li>通过<code class="highlighter-rouge">CppInvoke.add(3, 4)</code>调用该dll中的导出函数。</li>
+  </ol>
+
+  <p>注意：涉及托管代码和非托管代码之间传递参数，需要使用MarshalAs属性，如：</p>
+  <div class="highlighter-rouge"><pre class="highlight"><code>extern "C" __declspec (dllexport)
+bool __stdcall UpdateIntegerValueWithPriviledge(TCHAR *hkey, TCHAR *subkey, TCHAR *item, DWORD value)
+
+[DllImport("RegOperationWithPriviledge.dll", CharSet = CharSet.Unicode, CallingConvention = CallingConvention.StdCall)]
+       public static extern bool UpdateStringValueWithPriviledge(
+          [MarshalAs(UnmanagedType.LPTStr)]string hkey,
+          [MarshalAs(UnmanagedType.LPTStr)]string subkey,
+          [MarshalAs(UnmanagedType.LPTStr)]string item,
+          [MarshalAs(UnmanagedType.LPTStr)]string value,
+          int size
+          );
+
+</code></pre>
+  </div>
+
+</blockquote>
+
