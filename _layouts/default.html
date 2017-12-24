@@ -1,20 +1,22 @@
-{{ page.title }}
-<html>
-  <body>
-  <div class="page-content">
-    <div class="wrap">
+<!DOCTYPE html>
+<html lang="en">
+
+{% include head.html %}
+
+<!-- hack iOS CSS :active style -->
+<body ontouchstart="">
+
+    {% include nav.html %}
+
     {{ content }}
-    </div>
-  </div>  
-	<script>
-	  (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
-	    (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
-	      m=s.getElementsByTagName(o)[0];a.async=1;a.src=g;m.parentNode.insertBefore(a,m)
-	        })(window,document,'script','https://www.google-analytics.com/analytics.js','ga');
 
-		  ga('create', 'UA-104090691-1', 'auto');
-		    ga('send', 'pageview');
+    {% include footer.html %}
 
-		    </script>
-  </body>
+
+<!-- Image to hack wechat -->
+<img src="/img/icon_wechat.png" width="0" height="0" />
+<!-- Migrate from head to bottom, no longer block render and still work -->
+
+</body>
+
 </html>
