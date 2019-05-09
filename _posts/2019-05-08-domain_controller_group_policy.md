@@ -14,10 +14,10 @@ title: 域环境下管理员通过配置组策略管理client端(win10系统)
 从用户角度来讲，需要从两方面了解这些模板文件：这些文件的内容什么，如何使用这些文件配置系统。因此，了解这些ADMX文件的功能非常重要。在此提供两个参考链接(本文重点在于如何配置域控下的组策略，所以不具体描述Admx模板的内容)：
 
 [Group Policy Settings Reference for Windows and Windows Server](http://www.microsoft.com/en-us/download/details.aspx?id=25250)
-![group_policy_ref]({{ site.baseurl }}/images\in_post\post_domain_controller_group_policy\group_policy_settings_reference.png)
+![group_policy_ref]({{ site.baseurl }}/images/in_post/post_domain_controller_group_policy/group_policy_settings_reference.png)
 
 [Group Policy Search Tool](http://gpsearch.azurewebsites.net/)
-![group_policy_tool]({{ site.baseurl }}/images\in_post\post_domain_controller_group_policy\group_policy_tool.png)
+![group_policy_tool]({{ site.baseurl }}/images/in_post/post_domain_controller_group_policy/group_policy_tool.png)
 
 
 Group policy settings reference是一个excel表格，列出了win10(包括win8.1, vista, server等)中可用的组策略设置和对应的功能描述。同时，该表格中还给出了每一条组策略所对应的注册表信息。(这个对应关系非常有用，可以通过设置组策略影响注册表，相关内容在另外一篇文章中描述)
@@ -37,9 +37,9 @@ Window domain controller使用Central Store来存储管理模板文件。默认�
 
 1. 在`\\domain.com\SYSVOL\domain.com\policies`下创建一个central store，命名为PolicyDefinitions 
 2. 从一台Windows 10机器中拷贝`C:\Windows\PolicyDefinitions`的内容到`\\domain.com\SYSVOL\domain.com\policies\PolicyDefinitions`
-![create_central_store]({{ site.baseurl }}/images\in_post\post_domain_controller_group_policy\create_central_store.jpg)
+![create_central_store]({{ site.baseurl }}/images/in_post/post_domain_controller_group_policy/create_central_store.jpg)
 
-![inside_policy_definitions]({{ site.baseurl }}/images\in_post\post_domain_controller_group_policy\inside_policydefinitions.jpg)
+![inside_policy_definitions]({{ site.baseurl }}/images/in_post/post_domain_controller_group_policy/inside_policydefinitions.jpg)
 
 #### domain上创建并链接GPO
 完成了以上步骤，现在就可以创建一个GPO来管理域环境下的Windows10客户端了。
@@ -47,12 +47,12 @@ Window domain controller使用Central Store来存储管理模板文件。默认�
 运行gpmc.msc或者通过“服务器管理器”->“工具”->“组策略管理”打开组策略管理界面。
 
 默认的domain policy中仅包含Windows设置中的包含设置。
-![default_domain_policy]({{ site.baseurl }}/images\in_post\post_domain_controller_group_policy\default_domain_policy.jpg)
+![default_domain_policy]({{ site.baseurl }}/images/in_post/post_domain_controller_group_policy/default_domain_policy.jpg)
 
 新建"组策略对象"并"链接现有GPO"
-![search_policy_from_local]({{ site.baseurl }}/images\in_post\post_domain_controller_group_policy\search_policy_from_local.jpg)
+![search_policy_from_local]({{ site.baseurl }}/images/in_post/post_domain_controller_group_policy/search_policy_from_local.jpg)
 
-![search_policy_from_central_store]({{ site.baseurl }}/images\in_post\post_domain_controller_group_policy\search_policy_from_central_store.jpg)
+![search_policy_from_central_store]({{ site.baseurl }}/images/in_post/post_domain_controller_group_policy/search_policy_from_central_store.jpg)
 
 
 此处的新建"组策略对象"有两种方式：从中央存储检索到的ADMX创建和从本地计算机中检索到的ADMX创建。从中央存储检索到的ADMX创建，就是根据前面创建的central store中的admx文件创建gpo。而从本地计算机中检索到的ADMX创建，是会根据当前server中的policydefinitions中admx文件创建gpo的。
@@ -69,10 +69,10 @@ Window domain controller使用Central Store来存储管理模板文件。默认�
 可以通过以下方式验证域控组策略是否生效。
 
 编辑domain controller中新建的"组策略对象"，如下图，启用"隐藏windows功能"。
-![server_verify]({{ site.baseurl }}/images\in_post\post_domain_controller_group_policy\verify_domain_controller_server.jpg)
+![server_verify]({{ site.baseurl }}/images/in_post/post_domain_controller_group_policy/verify_domain_controller_server.jpg)
 在client端更新组策略，执行gpupdate /force。
 此时，点开控制面板->程序和功能->启用或关闭windows功能，提示系统管理员已经禁用该功能。
-![client_verify]({{ site.baseurl }}/images\in_post\post_domain_controller_group_policy\verify_domain_controller_client.jpg)
+![client_verify]({{ site.baseurl }}/images/in_post/post_domain_controller_group_policy/verify_domain_controller_client.jpg)
 
 打开client端本地组策略，查看"隐藏windows功能"这一条组策略，其处于"未配置"的状态。说明，controller的设置已经生效；
 
