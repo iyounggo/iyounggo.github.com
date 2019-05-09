@@ -1,6 +1,6 @@
 ---
-layout: page
-description: "debt 2018-01-31"  
+layout: post
+title: debt
 ---
 
 
